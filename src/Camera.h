@@ -54,6 +54,14 @@ public:
 		position += v;
 	}
 
+	//Rotate relatively
+	//
+	void rotate(const float& yaw, const float& pitch) 
+	{
+		mat4f::rotation(0, yaw, pitch);
+		//mat4f::rotation()
+	}
+
 	// Return World-to-View matrix for this camera
 	//
 	mat4f get_WorldToViewMatrix()

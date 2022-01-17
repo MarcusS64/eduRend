@@ -55,10 +55,14 @@ void OurTestScene::Init()
 // Called every frame
 // dt (seconds) is time elapsed since the previous frame
 //
-void OurTestScene::Update(
-	float dt,
-	InputHandler* input_handler)
+void OurTestScene::Update(float dt, InputHandler* input_handler)
 {
+	/*long mousedx = input_handler->GetMouseDeltaX();
+	long mousedy = input_handler->GetMouseDeltaY();
+
+	if (mousedx != 0 || mousedy != 0) {
+		camera->rotate(mousedx, mousedy);
+	}*/
 	// Basic camera control
 	if (input_handler->IsKeyPressed(Keys::Up) || input_handler->IsKeyPressed(Keys::W))
 		camera->move({ 0.0f, 0.0f, -camera_vel * dt });
@@ -68,6 +72,8 @@ void OurTestScene::Update(
 		camera->move({ camera_vel * dt, 0.0f, 0.0f });
 	if (input_handler->IsKeyPressed(Keys::Left) || input_handler->IsKeyPressed(Keys::A))
 		camera->move({ -camera_vel * dt, 0.0f, 0.0f });
+
+
 
 	// Now set/update object transformations
 	// This can be done using any sequence of transformation matrices,
