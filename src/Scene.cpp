@@ -47,8 +47,12 @@ void OurTestScene::Init()
 
 	// Create objects
 	quad = new QuadModel(dxdevice, dxdevice_context);
-	cube = new Cube(dxdevice, dxdevice_context); //QuadModel
+	cube = new Cube(dxdevice, dxdevice_context); 
 	sponza = new OBJModel("assets/crytek-sponza/sponza.obj", dxdevice, dxdevice_context);
+	sun = new OBJModel("assets/sphere/sphere.obj", dxdevice, dxdevice_context);
+	earth = new OBJModel("assets/sphere/sphere.obj", dxdevice, dxdevice_context);
+	moon = new OBJModel("assets/sphere/sphere.obj", dxdevice, dxdevice_context);
+	//plane = new OBJModel("assets/Maya/Plane.obj", dxdevice, dxdevice_context);
 }
 
 //
@@ -57,12 +61,6 @@ void OurTestScene::Init()
 //
 void OurTestScene::Update(float dt, InputHandler* input_handler)
 {
-	/*long mousedx = input_handler->GetMouseDeltaX();
-	long mousedy = input_handler->GetMouseDeltaY();
-
-	if (mousedx != 0 || mousedy != 0) {
-		camera->rotate(mousedx, mousedy);
-	}*/
 	// Basic camera control
 	if (input_handler->IsKeyPressed(Keys::Up) || input_handler->IsKeyPressed(Keys::W))
 		camera->move({ 0.0f, 0.0f, -camera_vel * dt });
@@ -72,6 +70,9 @@ void OurTestScene::Update(float dt, InputHandler* input_handler)
 		camera->move({ camera_vel * dt, 0.0f, 0.0f });
 	if (input_handler->IsKeyPressed(Keys::Left) || input_handler->IsKeyPressed(Keys::A))
 		camera->move({ -camera_vel * dt, 0.0f, 0.0f });
+	if ((GetKeyState(VK_LBUTTON) & 0x100) != 0) {
+		camera->rotate(input_handler->GetMouseDeltaY() / 300.0, input_handler->GetMouseDeltaX() / 300.0);
+	}
 
 
 
@@ -87,10 +88,11 @@ void OurTestScene::Update(float dt, InputHandler* input_handler)
 		mat4f::scaling(1.5, 1.5, 1.5);				// Scale uniformly to 150%
 
 	// Sponza model-to-world transformation
-	Msponza = mat4f::translation(0, -5, 0) *		 // Move down 5 units
-		mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * // Rotate pi/2 radians (90 degrees) around y
-		mat4f::scaling(0.05f);						 // The scene is quite large so scale it down to 5%
-
+	Msponza = mat4f::translation(0, -5, 0) * mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.05f);						 
+	Msun = mat4f::translation(0, 2, 0) * mat4f::rotation(-angle, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.5f);
+	Mearth = Msun * mat4f::translation(3, 0, 0) * mat4f::rotation(-angle, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.3f);
+	Mmoon = Mearth * mat4f::translation(2, 0, 0) * mat4f::rotation(-angle, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.2f);
+	//Mplane = mat4f::translation(0, 0, 0) * mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.5f);
 	// Increment the rotation angle.
 	angle += angle_vel * dt;
 
@@ -119,11 +121,22 @@ void OurTestScene::Render()
 	// Load matrices + the Quad's transformation to the device and render it
 	UpdateTransformationBuffer(Mquad, Mview, Mproj);
 	//quad->Render();
-	cube->Render();
+	cube->Render();	
 
-	// Load matrices + Sponza's transformation to the device and render it
-	UpdateTransformationBuffer(Msponza, Mview, Mproj);
+	UpdateTransformationBuffer(Msponza, Mview, Mproj);	
 	sponza->Render();
+
+	UpdateTransformationBuffer(Msun, Mview, Mproj);	
+	sun->Render();
+
+	UpdateTransformationBuffer(Mearth, Mview, Mproj);
+	earth->Render();
+
+	UpdateTransformationBuffer(Mmoon, Mview, Mproj);
+	moon->Render();
+
+	/*UpdateTransformationBuffer(Mplane, Mview, Mproj);
+	plane->Render();*/
 }
 
 void OurTestScene::Release()
@@ -131,6 +144,10 @@ void OurTestScene::Release()
 	SAFE_DELETE(quad);
 	SAFE_DELETE(cube);
 	SAFE_DELETE(sponza);
+	SAFE_DELETE(sun);
+	SAFE_DELETE(earth);
+	SAFE_DELETE(moon);
+	SAFE_DELETE(plane);
 	SAFE_DELETE(camera);
 
 	SAFE_RELEASE(transformation_buffer);

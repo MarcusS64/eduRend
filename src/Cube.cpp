@@ -56,13 +56,13 @@ Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) : Mode
 	vertices.push_back(v7);
 
 	// Triangle Backside
+	indices.push_back(7);
+	indices.push_back(5);
 	indices.push_back(4);
-	indices.push_back(5);
-	indices.push_back(7);
 	// Triangle Backside
-	indices.push_back(5);
-	indices.push_back(6);
 	indices.push_back(7);
+	indices.push_back(6);
+	indices.push_back(5);
 
 	//Left side of cude
 	Vertex v8, v9, v10, v11;
@@ -112,27 +112,27 @@ Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) : Mode
 	vertices.push_back(v15);
 
 	// Triangle #3
-	indices.push_back(12);
-	indices.push_back(14);
 	indices.push_back(15);
-	// Triangle #4
-	indices.push_back(12);
-	indices.push_back(13);
 	indices.push_back(14);
+	indices.push_back(12);
+	// Triangle #4
+	indices.push_back(14);
+	indices.push_back(13);
+	indices.push_back(12);
 
 	//Top side of cude
 	Vertex v16, v17, v18, v19;
 	v16.Pos = { -0.5, 0.5f, -1.0f };
-	v16.Normal = { 0, 1, 0 };
+	v16.Normal = { 0, -1, 0 };
 	v16.TexCoord = { 0, 0 };
 	v17.Pos = { -0.5, 0.5f, 0.0f };
-	v17.Normal = { 0, 1, 0 };
+	v17.Normal = { 0, -1, 0 };
 	v17.TexCoord = { 0, 1 };
 	v18.Pos = { 0.5, 0.5f, 0.0f };
-	v18.Normal = { 0, 1, 0 };
+	v18.Normal = { 0, -1, 0 };
 	v18.TexCoord = { 1, 1 };
 	v19.Pos = { 0.5, 0.5f, -1.0f };
-	v19.Normal = { 0, 1, 0 };
+	v19.Normal = { 0, -1, 0 };
 	v19.TexCoord = { 1, 0 };
 	vertices.push_back(v16);
 	vertices.push_back(v17);
@@ -168,13 +168,13 @@ Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) : Mode
 	vertices.push_back(v23);
 
 	// Triangle #9
-	indices.push_back(20);
+	indices.push_back(22);
 	indices.push_back(21);
-	indices.push_back(22);
-	// Triangle #10
 	indices.push_back(20);
-	indices.push_back(22);
+	// Triangle #10
 	indices.push_back(23);
+	indices.push_back(22);
+	indices.push_back(20);
 
 	// Vertex array descriptor
 	D3D11_BUFFER_DESC vbufferDesc = { 0 };

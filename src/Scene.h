@@ -78,10 +78,18 @@ class OurTestScene : public Scene
 	QuadModel* quad; 
 	Cube* cube;
 	OBJModel* sponza;
+	OBJModel* sun;
+	OBJModel* earth;
+	OBJModel* moon;
+	OBJModel* plane;
 
 	// Model-to-world transformation matrices
 	mat4f Msponza;
 	mat4f Mquad;
+	mat4f Msun;
+	mat4f Mearth;
+	mat4f Mmoon;
+	mat4f Mplane;
 
 	// World-to-view matrix
 	mat4f Mview;
