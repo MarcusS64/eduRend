@@ -52,7 +52,7 @@ void OurTestScene::Init()
 	sun = new OBJModel("assets/sphere/sphere.obj", dxdevice, dxdevice_context);
 	earth = new OBJModel("assets/sphere/sphere.obj", dxdevice, dxdevice_context);
 	moon = new OBJModel("assets/sphere/sphere.obj", dxdevice, dxdevice_context);
-	//plane = new OBJModel("assets/Maya/Plane.obj", dxdevice, dxdevice_context);
+	plane = new OBJModel("assets/Maya/Plane.obj", dxdevice, dxdevice_context);
 }
 
 //
@@ -92,7 +92,7 @@ void OurTestScene::Update(float dt, InputHandler* input_handler)
 	Msun = mat4f::translation(0, 2, 0) * mat4f::rotation(-angle, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.5f);
 	Mearth = Msun * mat4f::translation(3, 0, 0) * mat4f::rotation(-angle, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.3f);
 	Mmoon = Mearth * mat4f::translation(2, 0, 0) * mat4f::rotation(-angle, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.2f);
-	//Mplane = mat4f::translation(0, 0, 0) * mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.5f);
+	Mplane = mat4f::translation(0, 0, -9.0f) * mat4f::rotation(0.0f, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.5f);
 	// Increment the rotation angle.
 	angle += angle_vel * dt;
 
@@ -135,8 +135,8 @@ void OurTestScene::Render()
 	UpdateTransformationBuffer(Mmoon, Mview, Mproj);
 	moon->Render();
 
-	/*UpdateTransformationBuffer(Mplane, Mview, Mproj);
-	plane->Render();*/
+	UpdateTransformationBuffer(Mplane, Mview, Mproj);
+	plane->Render();
 }
 
 void OurTestScene::Release()
