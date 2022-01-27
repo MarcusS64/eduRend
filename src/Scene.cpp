@@ -20,15 +20,13 @@ void Scene::WindowResize(
 	this->window_height = window_height;
 }
 
-OurTestScene::OurTestScene(
-	ID3D11Device* dxdevice,
-	ID3D11DeviceContext* dxdevice_context,
-	int window_width,
-	int window_height) :
+OurTestScene::OurTestScene(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context, int window_width, int window_height) :
 	Scene(dxdevice, dxdevice_context, window_width, window_height)
 { 
-	InitTransformationBuffer();
+	InitTransformationBuffer();	
 	// + init other CBuffers
+	InitLightCamBuffer();
+	InitPhongShinyBuffer();
 }
 
 //
@@ -113,6 +111,7 @@ void OurTestScene::Render()
 {
 	// Bind transformation_buffer to slot b0 of the VS
 	dxdevice_context->VSSetConstantBuffers(0, 1, &transformation_buffer);
+	dxdevice_context->PSSetConstantBuffers(0, 1, &lightCam_buffer);
 
 	// Obtain the matrices needed for rendering from the camera
 	Mview = camera->get_WorldToViewMatrix();
@@ -152,6 +151,8 @@ void OurTestScene::Release()
 
 	SAFE_RELEASE(transformation_buffer);
 	// + release other CBuffers
+	SAFE_RELEASE(lightCam_buffer);
+	SAFE_RELEASE(phongShiny_buffer);
 }
 
 void OurTestScene::WindowResize(
@@ -190,4 +191,60 @@ void OurTestScene::UpdateTransformationBuffer(
 	matrix_buffer_->WorldToViewMatrix = WorldToViewMatrix;
 	matrix_buffer_->ProjectionMatrix = ProjectionMatrix;
 	dxdevice_context->Unmap(transformation_buffer, 0);
+}
+
+void OurTestScene::InitLightCamBuffer() 
+{
+	HRESULT hr;
+	D3D11_BUFFER_DESC MatrixBuffer_desc = { 0 };
+	MatrixBuffer_desc.Usage = D3D11_USAGE_DYNAMIC;
+	MatrixBuffer_desc.ByteWidth = sizeof(LightCamBuffer);
+	MatrixBuffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	MatrixBuffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	MatrixBuffer_desc.MiscFlags = 0;
+	MatrixBuffer_desc.StructureByteStride = 0;
+	ASSERT(hr = dxdevice->CreateBuffer(&MatrixBuffer_desc, nullptr, &lightCam_buffer));
+}
+
+void OurTestScene::UpdateLightCamBuffer(
+	mat4f ModelToWorldMatrix,
+	mat4f WorldToViewMatrix,
+	mat4f ProjectionMatrix) 
+{
+	// Map the resource buffer, obtain a pointer and then write our matrices to it
+	D3D11_MAPPED_SUBRESOURCE resource;
+	dxdevice_context->Map(lightCam_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+	LightCamBuffer* matrix_buffer_ = (LightCamBuffer*)resource.pData;
+	matrix_buffer_->ModelToWorldMatrix = ModelToWorldMatrix;
+	matrix_buffer_->WorldToViewMatrix = WorldToViewMatrix;
+	matrix_buffer_->ProjectionMatrix = ProjectionMatrix;
+	dxdevice_context->Unmap(lightCam_buffer, 0);
+}
+
+void OurTestScene::InitPhongShinyBuffer() 
+{
+	HRESULT hr;
+	D3D11_BUFFER_DESC MatrixBuffer_desc = { 0 };
+	MatrixBuffer_desc.Usage = D3D11_USAGE_DYNAMIC;
+	MatrixBuffer_desc.ByteWidth = sizeof(PhongShinyBuffer);
+	MatrixBuffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	MatrixBuffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	MatrixBuffer_desc.MiscFlags = 0;
+	MatrixBuffer_desc.StructureByteStride = 0;
+	ASSERT(hr = dxdevice->CreateBuffer(&MatrixBuffer_desc, nullptr, &phongShiny_buffer));
+}
+
+void OurTestScene::UpdatePhongShinyBuffer(
+	mat4f ModelToWorldMatrix,
+	mat4f WorldToViewMatrix,
+	mat4f ProjectionMatrix)
+{
+	// Map the resource buffer, obtain a pointer and then write our matrices to it
+	D3D11_MAPPED_SUBRESOURCE resource;
+	dxdevice_context->Map(phongShiny_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+	PhongShinyBuffer* matrix_buffer_ = (PhongShinyBuffer*)resource.pData;
+	matrix_buffer_->ModelToWorldMatrix = ModelToWorldMatrix;
+	matrix_buffer_->WorldToViewMatrix = WorldToViewMatrix;
+	matrix_buffer_->ProjectionMatrix = ProjectionMatrix;
+	dxdevice_context->Unmap(phongShiny_buffer, 0);
 }

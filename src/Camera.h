@@ -79,9 +79,9 @@ public:
 		//		inverse(T(p)*R) = inverse(R)*inverse(T(p)) = transpose(R)*T(-p)
 		// Since now there is no rotation, this matrix is simply T(-p)
 
-		worldToView = mat4f::translation(position) * mat4f::rotation(0, xRotation, yRotation);
+		//worldToView = mat4f::translation(position) * mat4f::rotation(0, xRotation, yRotation);
 
-		return worldToView.inverse(); //mat4f::rotation(0, yRotation, xRotation) * mat4f::translation(-position); 
+		return linalg::transpose(mat4f::rotation(0, xRotation, yRotation)) * mat4f::translation(-position);
 	}
 
 	// Matrix transforming from View space to Clip space

@@ -57,6 +57,8 @@ class OurTestScene : public Scene
 	// CBuffer for transformation matrices
 	ID3D11Buffer* transformation_buffer = nullptr;
 	// + other CBuffers
+	ID3D11Buffer* lightCam_buffer = nullptr;
+	ID3D11Buffer* phongShiny_buffer = nullptr;
 
 	// 
 	// CBuffer client-side definitions
@@ -70,6 +72,7 @@ class OurTestScene : public Scene
 		mat4f ProjectionMatrix;
 	};
 
+	
 	//
 	// Scene content
 	//
@@ -103,8 +106,20 @@ class OurTestScene : public Scene
 	float fps_cooldown = 0;
 
 	void InitTransformationBuffer();
+	void InitLightCamBuffer();
+	void InitPhongShinyBuffer();
 
 	void UpdateTransformationBuffer(
+		mat4f ModelToWorldMatrix,
+		mat4f WorldToViewMatrix,
+		mat4f ProjectionMatrix);
+
+	void UpdateLightCamBuffer(
+		mat4f ModelToWorldMatrix,
+		mat4f WorldToViewMatrix,
+		mat4f ProjectionMatrix);
+
+	void UpdatePhongShinyBuffer(
 		mat4f ModelToWorldMatrix,
 		mat4f WorldToViewMatrix,
 		mat4f ProjectionMatrix);

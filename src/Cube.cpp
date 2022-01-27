@@ -9,16 +9,16 @@ Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) : Mode
 
 	// Populate the vertex array with 4 vertices
 	Vertex v0, v1, v2, v3;
-	v0.Pos = { -0.5, -0.5f, 0.0f };
+	v0.Pos = { -0.5, -0.5f, 0.5f };
 	v0.Normal = { 0, 0, 1 };
 	v0.TexCoord = { 0, 0 };
-	v1.Pos = { 0.5, -0.5f, 0.0f };
+	v1.Pos = { 0.5, -0.5f, 0.5f };
 	v1.Normal = { 0, 0, 1 };
 	v1.TexCoord = { 0, 1 };
-	v2.Pos = { 0.5, 0.5f, 0.0f };
+	v2.Pos = { 0.5, 0.5f, 0.5f };
 	v2.Normal = { 0, 0, 1 };
 	v2.TexCoord = { 1, 1 };
-	v3.Pos = { -0.5, 0.5f, 0.0f };
+	v3.Pos = { -0.5, 0.5f, 0.5f };
 	v3.Normal = { 0, 0, 1 };
 	v3.TexCoord = { 1, 0 };
 	vertices.push_back(v0);
@@ -38,16 +38,16 @@ Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) : Mode
 
 	// Backside of Cube
 	Vertex v4, v5, v6, v7;
-	v4.Pos = { -0.5, -0.5f, -1.0f };
+	v4.Pos = { -0.5, -0.5f, -0.5f };
 	v4.Normal = { 0, 0, -1 };
 	v4.TexCoord = { 0, 0 };
-	v5.Pos = { 0.5, -0.5f, -1.0f };
+	v5.Pos = { 0.5, -0.5f, -0.5f };
 	v5.Normal = { 0, 0, -1 };
 	v5.TexCoord = { 0, 1 };
-	v6.Pos = { 0.5, 0.5f, -1.0f };
+	v6.Pos = { 0.5, 0.5f, -0.5f };
 	v6.Normal = { 0, 0, -1 };
 	v6.TexCoord = { 1, 1 };
-	v7.Pos = { -0.5, 0.5f, -1.0f };
+	v7.Pos = { -0.5, 0.5f, -0.5f };
 	v7.Normal = { 0, 0, -1 };
 	v7.TexCoord = { 1, 0 };
 	vertices.push_back(v4);
@@ -66,16 +66,16 @@ Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) : Mode
 
 	//Left side of cude
 	Vertex v8, v9, v10, v11;
-	v8.Pos = { -0.5, -0.5f, -1.0f };
+	v8.Pos = { -0.5, -0.5f, -0.5f };
 	v8.Normal = { 1, 0, 0 };
 	v8.TexCoord = { 0, 0 };
-	v9.Pos = { -0.5, -0.5f, 0.0f };
+	v9.Pos = { -0.5, -0.5f, 0.5f };
 	v9.Normal = { 1, 0, 0 };
 	v9.TexCoord = { 0, 1 };
-	v10.Pos = { -0.5, 0.5f, 0.0f };
+	v10.Pos = { -0.5, 0.5f, 0.5f };
 	v10.Normal = { 1, 0, 0 };
 	v10.TexCoord = { 1, 1 };
-	v11.Pos = { -0.5, 0.5f, -1.0f };
+	v11.Pos = { -0.5, 0.5f, -0.5f };
 	v11.Normal = { 1, 0, 0 };
 	v11.TexCoord = { 1, 0 };
 	vertices.push_back(v8);
@@ -94,16 +94,16 @@ Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) : Mode
 
 	//Right side of cude
 	Vertex v12, v13, v14, v15;
-	v12.Pos = { 0.5, -0.5f, -1.0f };
+	v12.Pos = { 0.5, -0.5f, -0.5f };
 	v12.Normal = { -1, 0, 0 };
 	v12.TexCoord = { 0, 0 };
-	v13.Pos = { 0.5, -0.5f, 0.0f };
+	v13.Pos = { 0.5, -0.5f, 0.5f };
 	v13.Normal = { -1, 0, 0 };
 	v13.TexCoord = { 0, 1 };
-	v14.Pos = { 0.5, 0.5f, 0.0f };
+	v14.Pos = { 0.5, 0.5f, 0.5f };
 	v14.Normal = { -1, 0, 0 };
 	v14.TexCoord = { 1, 1 };
-	v15.Pos = { 0.5, 0.5f, -1.0f };
+	v15.Pos = { 0.5, 0.5f, -0.5f };
 	v15.Normal = { -1, 0, 0 };
 	v15.TexCoord = { 1, 0 };
 	vertices.push_back(v12);
@@ -122,16 +122,16 @@ Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) : Mode
 
 	//Top side of cude
 	Vertex v16, v17, v18, v19;
-	v16.Pos = { -0.5, 0.5f, -1.0f };
+	v16.Pos = { -0.5, 0.5f, -0.5f };
 	v16.Normal = { 0, -1, 0 };
 	v16.TexCoord = { 0, 0 };
-	v17.Pos = { -0.5, 0.5f, 0.0f };
+	v17.Pos = { -0.5, 0.5f, 0.5f };
 	v17.Normal = { 0, -1, 0 };
 	v17.TexCoord = { 0, 1 };
-	v18.Pos = { 0.5, 0.5f, 0.0f };
+	v18.Pos = { 0.5, 0.5f, 0.5f };
 	v18.Normal = { 0, -1, 0 };
 	v18.TexCoord = { 1, 1 };
-	v19.Pos = { 0.5, 0.5f, -1.0f };
+	v19.Pos = { 0.5, 0.5f, -0.5f };
 	v19.Normal = { 0, -1, 0 };
 	v19.TexCoord = { 1, 0 };
 	vertices.push_back(v16);
@@ -150,16 +150,16 @@ Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) : Mode
 
 	//Bottom side of cude
 	Vertex v20, v21, v22, v23;
-	v20.Pos = { -0.5, -0.5f, -1.0f };
+	v20.Pos = { -0.5, -0.5f, -0.5f };
 	v20.Normal = { 0, 1, 0 };
 	v20.TexCoord = { 0, 0 };
-	v21.Pos = { -0.5, -0.5f, 0.0f };
+	v21.Pos = { -0.5, -0.5f, 0.5f };
 	v21.Normal = { 0, 1, 0 };
 	v21.TexCoord = { 0, 1 };
-	v22.Pos = { 0.5, -0.5f, 0.0f };
+	v22.Pos = { 0.5, -0.5f, 0.5f };
 	v22.Normal = { 0, 1, 0 };
 	v22.TexCoord = { 1, 1 };
-	v23.Pos = { 0.5, -0.5f, -1.0f };
+	v23.Pos = { 0.5, -0.5f, -0.5f };
 	v23.Normal = { 0, 1, 0 };
 	v23.TexCoord = { 1, 0 };
 	vertices.push_back(v20);
