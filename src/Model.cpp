@@ -6,10 +6,7 @@
 
 #include "Model.h"
 
-QuadModel::QuadModel(
-	ID3D11Device* dxdevice,
-	ID3D11DeviceContext* dxdevice_context)
-	: Model(dxdevice, dxdevice_context)
+QuadModel::QuadModel(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) : Model(dxdevice, dxdevice_context)
 {
 	// Vertex and index arrays
 	// Once their data is loaded to GPU buffers, they are not needed anymore
@@ -92,11 +89,7 @@ void QuadModel::Render() const
 }
 
 
-OBJModel::OBJModel(
-	const std::string& objfile,
-	ID3D11Device* dxdevice,
-	ID3D11DeviceContext* dxdevice_context)
-	: Model(dxdevice, dxdevice_context)
+OBJModel::OBJModel(const std::string& objfile, ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) : Model(dxdevice, dxdevice_context)
 {
 	// Load the OBJ
 	OBJLoader* mesh = new OBJLoader();
@@ -178,6 +171,35 @@ OBJModel::OBJModel(
 	SAFE_DELETE(mesh);
 }
 
+void Model::InitPhongShinyBuffer()
+{
+	HRESULT hr;
+	D3D11_BUFFER_DESC MatrixBuffer_desc = { 0 };
+	MatrixBuffer_desc.Usage = D3D11_USAGE_DYNAMIC;
+	MatrixBuffer_desc.ByteWidth = sizeof(PhongShinyBuffer);
+	MatrixBuffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	MatrixBuffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	MatrixBuffer_desc.MiscFlags = 0;
+	MatrixBuffer_desc.StructureByteStride = 0;
+	ASSERT(hr = dxdevice->CreateBuffer(&MatrixBuffer_desc, nullptr, &phongShiny_buffer));
+}
+
+void Model::UpdatePhongShinyBuffer(
+	vec3f Ambient,
+	vec3f Diffuse,
+	vec3f Speculair,
+	float shinyness)
+{
+	// Map the resource buffer, obtain a pointer and then write our matrices to it
+	D3D11_MAPPED_SUBRESOURCE resource;
+	dxdevice_context->Map(phongShiny_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+	PhongShinyBuffer* matrix_buffer_ = (PhongShinyBuffer*)resource.pData;
+	matrix_buffer_->Ambient = vec4f(Ambient, 0);
+	matrix_buffer_->Diffuse = vec4f(Diffuse, 0);
+	matrix_buffer_->Speculair = vec4f(Speculair, shinyness);
+	matrix_buffer_->shinyness = shinyness;
+	dxdevice_context->Unmap(phongShiny_buffer, 0);
+}
 
 void OBJModel::Render() const
 {
@@ -188,7 +210,7 @@ void OBJModel::Render() const
 
 	// Bind index buffer
 	dxdevice_context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
-
+	dxdevice_context->PSSetConstantBuffers(1, 1, &phongShiny_buffer);
 	// Iterate drawcalls
 	for (auto& irange : index_ranges)
 	{
@@ -199,9 +221,11 @@ void OBJModel::Render() const
 		dxdevice_context->PSSetShaderResources(0, 1, &mtl.diffuse_texture.texture_SRV);
 		// + bind other textures here, e.g. a normal map, to appropriate slots
 
+		UpdatePhongShinyBuffer(mtl.Ka, mtl.Kd, mtl.Ks, mtl.shinyness);
 		// Make the drawcall
 		dxdevice_context->DrawIndexed(irange.size, irange.start, 0);
 	}
+
 }
 
 OBJModel::~OBJModel()

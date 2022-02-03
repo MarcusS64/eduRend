@@ -58,7 +58,7 @@ class OurTestScene : public Scene
 	ID3D11Buffer* transformation_buffer = nullptr;
 	// + other CBuffers
 	ID3D11Buffer* lightCam_buffer = nullptr;
-	ID3D11Buffer* phongShiny_buffer = nullptr;
+	
 
 	// 
 	// CBuffer client-side definitions
@@ -98,7 +98,7 @@ class OurTestScene : public Scene
 	mat4f Mview;
 	// Projection matrix
 	mat4f Mproj;
-
+	vec4f LightPos;
 	// Misc
 	float angle = 0;			// A per-frame updated rotation angle (radians)...
 	float angle_vel = fPI / 2;	// ...and its velocity (radians/sec)
@@ -107,7 +107,7 @@ class OurTestScene : public Scene
 
 	void InitTransformationBuffer();
 	void InitLightCamBuffer();
-	void InitPhongShinyBuffer();
+	
 
 	void UpdateTransformationBuffer(
 		mat4f ModelToWorldMatrix,
@@ -115,14 +115,9 @@ class OurTestScene : public Scene
 		mat4f ProjectionMatrix);
 
 	void UpdateLightCamBuffer(
-		mat4f ModelToWorldMatrix,
-		mat4f WorldToViewMatrix,
-		mat4f ProjectionMatrix);
-
-	void UpdatePhongShinyBuffer(
-		mat4f ModelToWorldMatrix,
-		mat4f WorldToViewMatrix,
-		mat4f ProjectionMatrix);
+		vec4f camPos,
+		vec4f lightPos);
+	
 
 public:
 	OurTestScene(

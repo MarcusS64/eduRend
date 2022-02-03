@@ -17,15 +17,16 @@ struct MatrixBuffer_t //Replace with TransformationBuffer
 
 struct LightCamBuffer
 {
-	mat4f ModelToWorldMatrix;
-	mat4f WorldToViewMatrix;
-	mat4f ProjectionMatrix;
+	vec4f camPos;
+	vec4f lightPos;
 };
 
 struct PhongShinyBuffer
 {
-	mat4f ModelToWorldMatrix;
-	mat4f WorldToViewMatrix;
-	mat4f ProjectionMatrix;
+	vec4f Ambient;
+	vec4f Diffuse;
+	vec4f Speculair;
+
+	float shinyness;
 };
 #endif

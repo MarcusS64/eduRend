@@ -30,15 +30,21 @@ protected:
 	// Pointers to the class' vertex & index arrays
 	ID3D11Buffer* vertex_buffer = nullptr;
 	ID3D11Buffer* index_buffer = nullptr;
+	ID3D11Buffer* phongShiny_buffer = nullptr;
 
 public:
+	
+	void InitPhongShinyBuffer();
+	void UpdatePhongShinyBuffer( 
+		vec3f Ambient,
+		vec3f Diffuse,
+		vec3f Speculair,
+		float shinyness);
 
-	Model(
-		ID3D11Device* dxdevice, 
-		ID3D11DeviceContext* dxdevice_context) 
-		:	dxdevice(dxdevice),
-			dxdevice_context(dxdevice_context)
-	{ }
+	Model(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) :	dxdevice(dxdevice), dxdevice_context(dxdevice_context)
+	{ 
+		InitPhongShinyBuffer();
+	}
 
 	//
 	// Abstract render method: must be implemented by derived classes
@@ -52,6 +58,7 @@ public:
 	{ 
 		SAFE_RELEASE(vertex_buffer);
 		SAFE_RELEASE(index_buffer);
+		SAFE_RELEASE(phongShiny_buffer);
 	}
 };
 
@@ -61,9 +68,7 @@ class QuadModel : public Model
 
 public:
 
-	QuadModel(
-		ID3D11Device* dx3ddevice,
-		ID3D11DeviceContext* dx3ddevice_context);
+	QuadModel(ID3D11Device* dx3ddevice, ID3D11DeviceContext* dx3ddevice_context);
 
 	virtual void Render() const;
 
@@ -91,10 +96,7 @@ class OBJModel : public Model
 
 public:
 
-	OBJModel(
-		const std::string& objfile,
-		ID3D11Device* dxdevice,
-		ID3D11DeviceContext* dxdevice_context);
+	OBJModel(const std::string& objfile, ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context);
 
 	virtual void Render() const;
 

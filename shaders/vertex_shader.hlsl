@@ -6,19 +6,7 @@ cbuffer TransformationBuffer : register(b0)
 	matrix ProjectionMatrix;
 };
 
-cbuffer LightCamBuffer : register(b0) 
-{
-	matrix ModelToWorldMatrix;
-	matrix WorldToViewMatrix;
-	matrix ProjectionMatrix;
-}
 
-cbuffer PhongShinyBuffer : register(b0) 
-{
-	matrix ModelToWorldMatrix;
-	matrix WorldToViewMatrix;
-	matrix ProjectionMatrix;
-}
 
 struct VSIn
 {
