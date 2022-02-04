@@ -98,7 +98,8 @@ class OurTestScene : public Scene
 	mat4f Mview;
 	// Projection matrix
 	mat4f Mproj;
-	vec4f LightPos;
+	//Light position
+	vec3f LightPos;
 	// Misc
 	float angle = 0;			// A per-frame updated rotation angle (radians)...
 	float angle_vel = fPI / 2;	// ...and its velocity (radians/sec)
@@ -115,8 +116,8 @@ class OurTestScene : public Scene
 		mat4f ProjectionMatrix);
 
 	void UpdateLightCamBuffer(
-		vec4f camPos,
-		vec4f lightPos);
+		vec3f camPos,
+		vec3f lightPos);
 	
 
 public:

@@ -27,6 +27,6 @@ struct PhongShinyBuffer
 	vec4f Diffuse;
 	vec4f Speculair;
 
-	float shinyness;
+	//float shinyness;
 };
 #endif

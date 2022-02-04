@@ -184,20 +184,17 @@ void Model::InitPhongShinyBuffer()
 	ASSERT(hr = dxdevice->CreateBuffer(&MatrixBuffer_desc, nullptr, &phongShiny_buffer));
 }
 
-void Model::UpdatePhongShinyBuffer(
-	vec3f Ambient,
-	vec3f Diffuse,
-	vec3f Speculair,
-	float shinyness)
+void Model::UpdatePhongShinyBuffer(vec3f Ambient, vec3f Diffuse, vec3f Speculair, float shinyness) const
 {
 	// Map the resource buffer, obtain a pointer and then write our matrices to it
 	D3D11_MAPPED_SUBRESOURCE resource;
 	dxdevice_context->Map(phongShiny_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
 	PhongShinyBuffer* matrix_buffer_ = (PhongShinyBuffer*)resource.pData;
+	//Padding with one extra float value added to make a vec4f to make it 16-bit
 	matrix_buffer_->Ambient = vec4f(Ambient, 0);
 	matrix_buffer_->Diffuse = vec4f(Diffuse, 0);
 	matrix_buffer_->Speculair = vec4f(Speculair, shinyness);
-	matrix_buffer_->shinyness = shinyness;
+	//matrix_buffer_->shinyness = shinyness;
 	dxdevice_context->Unmap(phongShiny_buffer, 0);
 }
 

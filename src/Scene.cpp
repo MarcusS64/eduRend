@@ -51,7 +51,7 @@ void OurTestScene::Init()
 	moon = new OBJModel("assets/sphere/sphere.obj", dxdevice, dxdevice_context);
 	plane = new OBJModel("assets/Maya/Plane.obj", dxdevice, dxdevice_context);
 
-	LightPos = { 0.0f, 10.0f, -10.0f, 0.0f };
+	LightPos = { 0.0f, 10.0f, -10.0f};
 }
 
 //
@@ -211,15 +211,15 @@ void OurTestScene::InitLightCamBuffer()
 }
 
 void OurTestScene::UpdateLightCamBuffer(
-	vec4f camPos, //Should be a vec3f?
-	vec4f lightPos) 
+	vec3f camPos, //Should be a vec3f?
+	vec3f lightPos) 
 {
 	// Map the resource buffer, obtain a pointer and then write our matrices to it
 	D3D11_MAPPED_SUBRESOURCE resource;
 	dxdevice_context->Map(lightCam_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
 	LightCamBuffer* matrix_buffer_ = (LightCamBuffer*)resource.pData;
-	matrix_buffer_->camPos = camPos;
-	matrix_buffer_->lightPos = lightPos;
+	matrix_buffer_->camPos = vec4f(camPos, 0);
+	matrix_buffer_->lightPos = vec4f(lightPos, 0);
 	dxdevice_context->Unmap(lightCam_buffer, 0);
 }
 
