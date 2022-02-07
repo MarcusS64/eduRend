@@ -7,7 +7,7 @@
 #include "Texture.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-//#include "stb_image.h"
+#include "stb_image.h"
 
 HRESULT LoadTextureFromFile(
     ID3D11Device* dxdevice,
@@ -47,14 +47,14 @@ HRESULT LoadTextureFromFile(
     HRESULT hr;
 
     // Load from disk into a raw RGBA buffer
-    //stbi_set_flip_vertically_on_load(1);
+    stbi_set_flip_vertically_on_load(1);
     int image_width = 0;
     int image_height = 0;
-    //unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
-    /*if (image_data == nullptr)
+    unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
+    if (image_data == nullptr)
     {
         return E_FAIL;
-    }*/
+    }
 
     // Create texture
     D3D11_TEXTURE2D_DESC desc;
@@ -72,7 +72,7 @@ HRESULT LoadTextureFromFile(
 
     ID3D11Texture2D* pTexture = NULL;
     D3D11_SUBRESOURCE_DATA subResource;
-    //subResource.pSysMem = image_data;
+    subResource.pSysMem = image_data;
     subResource.SysMemPitch = desc.Width * 4;
     subResource.SysMemSlicePitch = 0;
     D3D11_SUBRESOURCE_DATA* subResourcePtr = &subResource;
@@ -117,7 +117,7 @@ HRESULT LoadTextureFromFile(
 
     // Cleanup
     pTexture->Release();
-    //stbi_image_free(image_data);
+    stbi_image_free(image_data);
 
     // Done
     texture_out->width = image_width;
@@ -133,13 +133,13 @@ HRESULT LoadCubeTextureFromFile(
     HRESULT hr;
 
     // Load from disk into a raw RGBA buffer
-    //stbi_set_flip_vertically_on_load(1);
+    stbi_set_flip_vertically_on_load(1);
     int image_width = 0;
     int image_height = 0;
     unsigned char* image_data[6];
     for (int i = 0; i < 6; i++)
     {
-        //image_data[i] = stbi_load(filenames[i], &image_width, &image_height, NULL, 4);
+        image_data[i] = stbi_load(filenames[i], &image_width, &image_height, NULL, 4);
         if (image_data[i] == nullptr)
         {
             return E_FAIL;
