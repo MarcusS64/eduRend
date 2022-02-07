@@ -50,8 +50,9 @@ void OurTestScene::Init()
 	earth = new OBJModel("assets/sphere/sphere.obj", dxdevice, dxdevice_context);
 	moon = new OBJModel("assets/sphere/sphere.obj", dxdevice, dxdevice_context);
 	plane = new OBJModel("assets/Maya/Plane.obj", dxdevice, dxdevice_context);
+	lightSource = new OBJModel("assets/sphere/sphere.obj", dxdevice, dxdevice_context);
 
-	LightPos = { 0.0f, 10.0f, -10.0f};
+	LightPos = { 0.0f, 3.0f, 0.0f};
 }
 
 //
@@ -73,7 +74,8 @@ void OurTestScene::Update(float dt, InputHandler* input_handler)
 		camera->rotate(input_handler->GetMouseDeltaY() / 300.0, input_handler->GetMouseDeltaX() / 300.0);
 	}
 
-
+	LightPos.x = 10.0f * cos(angle/2.0f);
+	LightPos.z = -20.0f + 10.0f * sin(angle/2.0f);
 
 	// Now set/update object transformations
 	// This can be done using any sequence of transformation matrices,
@@ -92,6 +94,7 @@ void OurTestScene::Update(float dt, InputHandler* input_handler)
 	Mearth = Msun * mat4f::translation(3, 0, 0) * mat4f::rotation(-angle, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.3f);
 	Mmoon = Mearth * mat4f::translation(2, 0, 0) * mat4f::rotation(-angle, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.2f);
 	Mplane = mat4f::translation(0, 0, -9.0f) * mat4f::rotation(0.0f, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.5f);
+	MlightSource = mat4f::translation(LightPos.x, LightPos.y, LightPos.z) * mat4f::rotation(0.0f, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.2f);
 	// Increment the rotation angle.
 	angle += angle_vel * dt;
 
@@ -126,10 +129,11 @@ void OurTestScene::Render()
 	cube->Render();	
 
 	UpdateTransformationBuffer(Msponza, Mview, Mproj);	
+	//UpdateLightCamBuffer(camera->position, LightPos);
 	sponza->Render();
 
 	UpdateTransformationBuffer(Msun, Mview, Mproj);
-	
+	//UpdateLightCamBuffer(camera->position, LightPos);
 	sun->Render();
 
 	UpdateTransformationBuffer(Mearth, Mview, Mproj);
@@ -140,6 +144,9 @@ void OurTestScene::Render()
 
 	UpdateTransformationBuffer(Mplane, Mview, Mproj);
 	plane->Render();
+
+	UpdateTransformationBuffer(MlightSource, Mview, Mproj);
+	lightSource->Render();
 }
 
 void OurTestScene::Release()
@@ -152,6 +159,7 @@ void OurTestScene::Release()
 	SAFE_DELETE(moon);
 	SAFE_DELETE(plane);
 	SAFE_DELETE(camera);
+	SAFE_DELETE(lightSource);
 
 	SAFE_RELEASE(transformation_buffer);
 	// + release other CBuffers

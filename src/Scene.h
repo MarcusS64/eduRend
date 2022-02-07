@@ -85,6 +85,7 @@ class OurTestScene : public Scene
 	OBJModel* earth;
 	OBJModel* moon;
 	OBJModel* plane;
+	OBJModel* lightSource;
 
 	// Model-to-world transformation matrices
 	mat4f Msponza;
@@ -93,6 +94,7 @@ class OurTestScene : public Scene
 	mat4f Mearth;
 	mat4f Mmoon;
 	mat4f Mplane;
+	mat4f MlightSource;
 
 	// World-to-view matrix
 	mat4f Mview;
