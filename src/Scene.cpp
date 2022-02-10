@@ -102,7 +102,7 @@ void OurTestScene::Update(float dt, InputHandler* input_handler)
 	fps_cooldown -= dt;
 	if (fps_cooldown < 0.0)
 	{
-		std::cout << "fps " << (int)(1.0f / dt) << std::endl;
+		//std::cout << "fps " << (int)(1.0f / dt) << std::endl;
 //		printf("fps %i\n", (int)(1.0f / dt));
 		fps_cooldown = 2.0;
 	}
@@ -117,7 +117,7 @@ void OurTestScene::Render()
 	dxdevice_context->VSSetConstantBuffers(0, 1, &transformation_buffer);
 	dxdevice_context->PSSetConstantBuffers(0, 1, &lightCam_buffer);
 	
-
+	//dxdevice_context->PSSetSamplers(0, 1, &tex_sampler[filterIndex]); //Comment in to bind the sampler
 	// Obtain the matrices needed for rendering from the camera
 	Mview = camera->get_WorldToViewMatrix();
 	Mproj = camera->get_ProjectionMatrix();
@@ -229,5 +229,33 @@ void OurTestScene::UpdateLightCamBuffer(
 	matrix_buffer_->camPos = vec4f(camPos, 0);
 	matrix_buffer_->lightPos = vec4f(lightPos, 0);
 	dxdevice_context->Unmap(lightCam_buffer, 0);
+}
+
+void OurTestScene::InitTexSampler() { //Three samplers created. Make a method changing between them using an index
+
+	HRESULT hr;
+	D3D11_SAMPLER_DESC samplerDesc = { //Använd wrap
+		D3D11_FILTER_MIN_MAG_MIP_POINT,
+		D3D11_TEXTURE_ADDRESS_MIRROR,
+		D3D11_TEXTURE_ADDRESS_MIRROR,
+		D3D11_TEXTURE_ADDRESS_MIRROR,
+		0.0f,
+		16,
+		D3D11_COMPARISON_NEVER,
+		{1.0f, 1.0f, 1.0f, 1.0f},
+		-FLT_MAX,
+		FLT_MAX,
+	};
+	ASSERT(hr = dxdevice->CreateSamplerState(&samplerDesc, &tex_sampler[0]));
+
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	ASSERT(hr = dxdevice->CreateSamplerState(&samplerDesc, &tex_sampler[1]));
+
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	ASSERT(hr = dxdevice->CreateSamplerState(&samplerDesc, &tex_sampler[2]));
+}
+
+void OurTestScene::SwapFilter(InputHandler* input) {
+	//if(imput == )
 }
 

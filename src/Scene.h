@@ -59,7 +59,7 @@ class OurTestScene : public Scene
 	// + other CBuffers
 	ID3D11Buffer* lightCam_buffer = nullptr;
 	
-
+	ID3D11SamplerState* tex_sampler[3];
 	// 
 	// CBuffer client-side definitions
 	// These must match the corresponding shader definitions 
@@ -107,10 +107,11 @@ class OurTestScene : public Scene
 	float angle_vel = fPI / 2;	// ...and its velocity (radians/sec)
 	float camera_vel = 5.0f;	// Camera movement velocity in units/s
 	float fps_cooldown = 0;
+	int filterIndex = 0;
 
 	void InitTransformationBuffer();
 	void InitLightCamBuffer();
-	
+	void InitTexSampler();
 
 	void UpdateTransformationBuffer(
 		mat4f ModelToWorldMatrix,
@@ -121,7 +122,7 @@ class OurTestScene : public Scene
 		vec3f camPos,
 		vec3f lightPos);
 	
-
+	void SwapFilter(InputHandler* input);
 public:
 	OurTestScene(
 		ID3D11Device* dxdevice,

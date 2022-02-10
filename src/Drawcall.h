@@ -45,6 +45,14 @@ struct Material
 	// Device textures
 	Texture diffuse_texture;
 	// + other texture types
+	/*ID3D11ShaderResourceView* map_Kd_TexSRV = nullptr;
+	ID3D11Resource*			map_Kd_Tex = nullptr;
+	ID3D11ShaderResourceView* map_Ks_TexSRV = nullptr;
+	ID3D11Resource*			map_Ks_Tex = nullptr;
+	ID3D11ShaderResourceView* map_d_TexSRV = nullptr;
+	ID3D11Resource*			map_d_Tex = nullptr;
+	ID3D11ShaderResourceView* map_bump_TexSRV = nullptr;
+	ID3D11Resource*			map_bump_Tex = nullptr;*/
 };
 
 static Material DefaultMaterial = Material();

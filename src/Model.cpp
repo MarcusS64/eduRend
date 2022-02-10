@@ -155,8 +155,8 @@ OBJModel::OBJModel(const std::string& objfile, ID3D11Device* dxdevice, ID3D11Dev
 		//
 		if (mtl.Kd_texture_filename.size()) {
 
-			hr = LoadTextureFromFile(
-				dxdevice,
+			hr = LoadTextureFromFile( 
+				dxdevice, //dxdevice_context, //For mipmapping
 				mtl.Kd_texture_filename.c_str(), 
 				&mtl.diffuse_texture);
 			std::cout << "\t" << mtl.Kd_texture_filename 

@@ -206,7 +206,21 @@ Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) : Mode
 
 	nbr_indices = (unsigned int)indices.size();
 
-	
+	HRESULT hr;
+	//Material mtl;
+
+	mtl.Kd_texture_filename = "assets/wooddoll/wood.png";
+	// Load Diffuse texture
+	//
+	if (mtl.Kd_texture_filename.size()) {
+
+		hr = LoadTextureFromFile(
+			dxdevice, //dxdevice_context, //For mipmapping
+			mtl.Kd_texture_filename.c_str(),
+			&mtl.diffuse_texture);
+		std::cout << "\t" << mtl.Kd_texture_filename
+			<< (SUCCEEDED(hr) ? " - OK" : "- FAILED") << std::endl;
+	}
 }
 
 void Cube::Render() const
@@ -218,7 +232,16 @@ void Cube::Render() const
 
 	// Bind our index buffer
 	dxdevice_context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
-
+	dxdevice_context->PSSetShaderResources(0, 1, &mtl.diffuse_texture.texture_SRV);
 	// Make the drawcall
 	dxdevice_context->DrawIndexed(nbr_indices, 0, 0);
+}
+
+Cube::~Cube()
+{
+
+		SAFE_RELEASE(mtl.diffuse_texture.texture_SRV);
+
+		// Release other used textures ...
+	
 }
