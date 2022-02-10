@@ -26,6 +26,7 @@ OurTestScene::OurTestScene(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice
 	InitTransformationBuffer();	
 	// + init other CBuffers
 	InitLightCamBuffer();
+	InitTexSampler();
 }
 
 //
@@ -76,7 +77,7 @@ void OurTestScene::Update(float dt, InputHandler* input_handler)
 
 	LightPos.x = 10.0f * cos(angle/2.0f);
 	LightPos.z = -20.0f + 10.0f * sin(angle/2.0f);
-
+	
 	// Now set/update object transformations
 	// This can be done using any sequence of transformation matrices,
 	// but the T*R*S order is most common; i.e. scale, then rotate, and then translate.
@@ -106,6 +107,8 @@ void OurTestScene::Update(float dt, InputHandler* input_handler)
 //		printf("fps %i\n", (int)(1.0f / dt));
 		fps_cooldown = 2.0;
 	}
+
+	SwapFilter(input_handler);
 }
 
 //
@@ -117,23 +120,21 @@ void OurTestScene::Render()
 	dxdevice_context->VSSetConstantBuffers(0, 1, &transformation_buffer);
 	dxdevice_context->PSSetConstantBuffers(0, 1, &lightCam_buffer);
 	
-	//dxdevice_context->PSSetSamplers(0, 1, &tex_sampler[filterIndex]); //Comment in to bind the sampler
+	dxdevice_context->PSSetSamplers(0, 1, &tex_sampler[filterIndex]); //Comment in to bind the sampler
 	// Obtain the matrices needed for rendering from the camera
 	Mview = camera->get_WorldToViewMatrix();
 	Mproj = camera->get_ProjectionMatrix();
 
-	// Load matrices + the Quad's transformation to the device and render it
-	UpdateTransformationBuffer(Mquad, Mview, Mproj);
 	UpdateLightCamBuffer(camera->position, LightPos);
+	// Load matrices + the Quad's transformation to the device and render it
+	UpdateTransformationBuffer(Mquad, Mview, Mproj);	
 	//quad->Render();
 	cube->Render();	
 
 	UpdateTransformationBuffer(Msponza, Mview, Mproj);	
-	//UpdateLightCamBuffer(camera->position, LightPos);
 	sponza->Render();
 
 	UpdateTransformationBuffer(Msun, Mview, Mproj);
-	//UpdateLightCamBuffer(camera->position, LightPos);
 	sun->Render();
 
 	UpdateTransformationBuffer(Mearth, Mview, Mproj);
@@ -164,7 +165,7 @@ void OurTestScene::Release()
 	SAFE_RELEASE(transformation_buffer);
 	// + release other CBuffers
 	SAFE_RELEASE(lightCam_buffer);
-	
+	//SAFE_RELEASE(tex_sampler);
 }
 
 void OurTestScene::WindowResize(
@@ -236,9 +237,9 @@ void OurTestScene::InitTexSampler() { //Three samplers created. Make a method ch
 	HRESULT hr;
 	D3D11_SAMPLER_DESC samplerDesc = { //Använd wrap
 		D3D11_FILTER_MIN_MAG_MIP_POINT,
-		D3D11_TEXTURE_ADDRESS_MIRROR,
-		D3D11_TEXTURE_ADDRESS_MIRROR,
-		D3D11_TEXTURE_ADDRESS_MIRROR,
+		D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_TEXTURE_ADDRESS_WRAP,
 		0.0f,
 		16,
 		D3D11_COMPARISON_NEVER,
@@ -256,6 +257,14 @@ void OurTestScene::InitTexSampler() { //Three samplers created. Make a method ch
 }
 
 void OurTestScene::SwapFilter(InputHandler* input) {
-	//if(imput == )
+	if (input->IsKeyPressed(Keys::D1)) {
+		filterIndex = 0;
+	}
+	else if (input->IsKeyPressed(Keys::D2)) {
+		filterIndex = 1;
+	}
+	else if (input->IsKeyPressed(Keys::D3)) {
+		filterIndex = 2;
+	}
 }
 
