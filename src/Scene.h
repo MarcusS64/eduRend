@@ -59,7 +59,7 @@ class OurTestScene : public Scene
 	// + other CBuffers
 	ID3D11Buffer* lightCam_buffer = nullptr;
 	
-	ID3D11SamplerState* tex_sampler[3];
+	ID3D11SamplerState* tex_sampler[5];
 	// 
 	// CBuffer client-side definitions
 	// These must match the corresponding shader definitions 

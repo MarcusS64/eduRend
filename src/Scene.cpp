@@ -237,9 +237,9 @@ void OurTestScene::InitTexSampler() { //Three samplers created. Make a method ch
 	HRESULT hr;
 	D3D11_SAMPLER_DESC samplerDesc = { //Använd wrap
 		D3D11_FILTER_MIN_MAG_MIP_POINT,
-		D3D11_TEXTURE_ADDRESS_WRAP,
-		D3D11_TEXTURE_ADDRESS_WRAP,
-		D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_TEXTURE_ADDRESS_MIRROR,
+		D3D11_TEXTURE_ADDRESS_MIRROR,
+		D3D11_TEXTURE_ADDRESS_MIRROR,
 		0.0f,
 		16,
 		D3D11_COMPARISON_NEVER,
@@ -254,6 +254,20 @@ void OurTestScene::InitTexSampler() { //Three samplers created. Make a method ch
 
 	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
 	ASSERT(hr = dxdevice->CreateSamplerState(&samplerDesc, &tex_sampler[2]));
+
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	samplerDesc.MaxAnisotropy = 16;
+	ASSERT(hr = dxdevice->CreateSamplerState(&samplerDesc, &tex_sampler[3]));
+
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	samplerDesc.MaxAnisotropy = 16;
+	ASSERT(hr = dxdevice->CreateSamplerState(&samplerDesc, &tex_sampler[4]));
 }
 
 void OurTestScene::SwapFilter(InputHandler* input) {
@@ -265,6 +279,12 @@ void OurTestScene::SwapFilter(InputHandler* input) {
 	}
 	else if (input->IsKeyPressed(Keys::D3)) {
 		filterIndex = 2;
+	}
+	else if (input->IsKeyPressed(Keys::D4)) {
+		filterIndex = 3;
+	}
+	else if (input->IsKeyPressed(Keys::D5)) {
+		filterIndex = 4;
 	}
 }
 

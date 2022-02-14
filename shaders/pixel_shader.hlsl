@@ -45,7 +45,7 @@ float4 PS_main(PSIn input) : SV_Target
 	float Shinyness = 200;
 	float4 DiffuseColor = texDiffuse.Sample(texSampler, input.TexCoord);
 
-	float3 A = Ambient.xyz;
+	float3 A = DiffuseColor.xyz * 0.3f;
 	float3 D = mul(DiffuseColor.xyz, max(dot(LightVector1.xyz, input.Normal), 0)); //Diffuse.xyz
 	float3 S = mul(Specular.xyz, pow(max(dot(ReflectVector1, ViewVector), 0), Shinyness));
 
