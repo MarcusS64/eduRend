@@ -90,7 +90,7 @@ void OurTestScene::Update(float dt, InputHandler* input_handler)
 		mat4f::scaling(1.5, 1.5, 1.5);				// Scale uniformly to 150%
 
 	// Sponza model-to-world transformation
-	Msponza = mat4f::translation(0, -5, 0) * mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.05f);						 
+	Msponza = mat4f::translation(0, -5, 0) * mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.5f);						 
 	Msun = mat4f::translation(0, 2, 0) * mat4f::rotation(-angle, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.5f);
 	Mearth = Msun * mat4f::translation(3, 0, 0) * mat4f::rotation(-angle, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.3f);
 	Mmoon = Mearth * mat4f::translation(2, 0, 0) * mat4f::rotation(-angle, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.2f);
@@ -120,7 +120,7 @@ void OurTestScene::Render()
 	dxdevice_context->VSSetConstantBuffers(0, 1, &transformation_buffer);
 	dxdevice_context->PSSetConstantBuffers(0, 1, &lightCam_buffer);
 	
-	dxdevice_context->PSSetSamplers(0, 1, &tex_sampler[filterIndex]); //Comment in to bind the sampler
+	dxdevice_context->PSSetSamplers(0, 1, &tex_sampler[filterIndex]);
 	// Obtain the matrices needed for rendering from the camera
 	Mview = camera->get_WorldToViewMatrix();
 	Mproj = camera->get_ProjectionMatrix();
@@ -220,7 +220,7 @@ void OurTestScene::InitLightCamBuffer()
 }
 
 void OurTestScene::UpdateLightCamBuffer(
-	vec3f camPos, //Should be a vec3f?
+	vec3f camPos, 
 	vec3f lightPos) 
 {
 	// Map the resource buffer, obtain a pointer and then write our matrices to it
@@ -235,7 +235,7 @@ void OurTestScene::UpdateLightCamBuffer(
 void OurTestScene::InitTexSampler() { //Three samplers created. Make a method changing between them using an index
 
 	HRESULT hr;
-	D3D11_SAMPLER_DESC samplerDesc = { //Använd wrap
+	D3D11_SAMPLER_DESC samplerDesc = {
 		D3D11_FILTER_MIN_MAG_MIP_POINT,
 		D3D11_TEXTURE_ADDRESS_MIRROR,
 		D3D11_TEXTURE_ADDRESS_MIRROR,

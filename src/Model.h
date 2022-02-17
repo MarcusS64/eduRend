@@ -38,7 +38,7 @@ public:
 	
 	void InitPhongShinyBuffer();
 	void UpdatePhongShinyBuffer( vec3f Ambient, vec3f Diffuse, vec3f Speculair, float shinyness) const;
-
+	void compute_TB(Vertex& v0, Vertex& v1, Vertex& v2); //New
 	Model(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) :	dxdevice(dxdevice), dxdevice_context(dxdevice_context)
 	{ 
 		InitPhongShinyBuffer();

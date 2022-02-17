@@ -114,6 +114,13 @@ OBJModel::OBJModel(const std::string& objfile, ID3D11Device* dxdevice, ID3D11Dev
 		i_ofs = (unsigned int)indices.size();
 	}
 
+	for (int i = 0; i < indices.size(); i += 3) { //New
+		compute_TB(
+			mesh->vertices[indices[i+0]],
+			mesh->vertices[indices[i+1]],
+			mesh->vertices[indices[i+2]]);
+	}
+
 	// Vertex array descriptor
 	D3D11_BUFFER_DESC vbufferDesc = { 0 };
 	vbufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -166,10 +173,43 @@ OBJModel::OBJModel(const std::string& objfile, ID3D11Device* dxdevice, ID3D11Dev
 
 		// + other texture types here - see Material class
 		// ...
+		if (mtl.normal_texture_filename.size()) {
+
+			hr = LoadTextureFromFile(
+				dxdevice,
+				dxdevice_context, //For mipmapping
+				mtl.normal_texture_filename.c_str(),
+				&mtl.normal_texture);
+			std::cout << "\t" << mtl.normal_texture_filename
+				<< (SUCCEEDED(hr) ? " - OK" : "- FAILED") << std::endl;
+		}
 	}
 	std::cout << "Done." << std::endl;
 
 	SAFE_DELETE(mesh);
+}
+
+void Model::compute_TB(Vertex& v0, Vertex& v1, Vertex& v2) {
+	vec3f tangent, binormal;
+	vec3f D, E; 
+	vec2f F, G;
+
+	D = v1.Pos - v0.Pos;
+	E = v2.Pos - v0.Pos;
+	F = v1.TexCoord - v0.TexCoord;
+	G = v2.TexCoord - v0.TexCoord;
+
+	float determinant = 1.0f / (F.x * G.y - F.y * G.x);
+	tangent.x = determinant * (G.y * D.x - F.y * E.x);
+	tangent.y = determinant * (G.y * D.y - F.y * E.y);
+	tangent.z = determinant * (G.y * D.z - F.y * E.z);
+
+	binormal.x = determinant * (-G.x * D.x + F.x * E.x);
+	binormal.y = determinant * (-G.x * D.y + F.x * E.y);
+	binormal.z = determinant * (-G.x * D.z + F.x * E.z);
+
+	v0.Tangent = v1.Tangent = v2.Tangent = tangent;
+	v0.Binormal = v1.Binormal = v2.Binormal = binormal;
 }
 
 void Model::InitPhongShinyBuffer()
@@ -218,7 +258,7 @@ void OBJModel::Render() const
 		// Bind diffuse texture to slot t0 of the PS
 		dxdevice_context->PSSetShaderResources(0, 1, &mtl.diffuse_texture.texture_SRV);
 		// + bind other textures here, e.g. a normal map, to appropriate slots
-
+		dxdevice_context->PSSetShaderResources(1, 1, &mtl.normal_texture.texture_SRV); //New
 		UpdatePhongShinyBuffer(mtl.Ka, mtl.Kd, mtl.Ks, mtl.shinyness);
 		// Make the drawcall
 		dxdevice_context->DrawIndexed(irange.size, irange.start, 0);
@@ -233,5 +273,6 @@ OBJModel::~OBJModel()
 		SAFE_RELEASE(material.diffuse_texture.texture_SRV);
 
 		// Release other used textures ...
+		SAFE_RELEASE(material.normal_texture.texture_SRV); //New
 	}
 }
