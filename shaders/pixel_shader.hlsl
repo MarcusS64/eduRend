@@ -35,11 +35,17 @@ cbuffer PhongShinyBuffer : register(b1)
 float4 PS_main(PSIn input) : SV_Target
 {
 	//From color to vector (decode) //New
-	/*float3 N = input.Normal * 2 - 1;
-	float3 B = input.Binormal;
-	float3 T = input.Tangent;*/
+	float3 N = normalize( input.Normal );
+	float3 B = normalize( input.Binormal);
+	float3 T = normalize( input.Tangent);
+	//return float4(input.Binormal * 0.5 + 0.5, 1); //For debugging with colors
+	float3x3 TBN = transpose(float3x3 (T, B, N));
+	//Construct new normal with the TBN matrix
+	float4 NormalVector = texNormal.Sample(texSampler, input.TexCoord) * 2 - 1;
+	float3 N_ = mul(TBN, NormalVector.xyz);
+	//Replace input.Normal with the new normal TBN * N
 	float3 LightVector1 = normalize(LightPosition1.xyz - input.WorldPos);
-	float3 ReflectVector1 = normalize(reflect(-LightVector1.xyz, input.Normal));
+	float3 ReflectVector1 = normalize(reflect(-LightVector1.xyz, N_));
 
 	/*float3 LightVector2 = normalize(LightPosition2 - input.worldPos);
 	float3 ReflectVector2 = normalize(reflect(LightVector2, input.Normal));*/
@@ -53,7 +59,7 @@ float4 PS_main(PSIn input) : SV_Target
 	float4 DiffuseColor = texDiffuse.Sample(texSampler, input.TexCoord);	
 
 	float3 A = Ambient.xyz; //DiffuseColor.xyz * 0.3f;
-	float3 D = mul(DiffuseColor.xyz, max(dot(LightVector1.xyz, input.Normal), 0)); //Diffuse.xyz
+	float3 D = mul(DiffuseColor.xyz, max(dot(LightVector1.xyz, N_), 0)); //Diffuse.xyz
 	float3 S = mul(Specular.xyz, pow(max(dot(ReflectVector1, ViewVector), 0), Shinyness));
 	
 	// Debug shading #1: map and return normal as a color, i.e. from [-1,1]->[0,1] per component
