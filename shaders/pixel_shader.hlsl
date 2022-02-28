@@ -1,6 +1,7 @@
 
 Texture2D texDiffuse : register(t0);
 Texture2D texNormal : register(t1);
+TextureCube texCube : register(t2); //New
 
 struct PSIn
 {
@@ -13,6 +14,7 @@ struct PSIn
 };
 
 SamplerState texSampler : register (s0);
+//SamplerState cubeSampler : register (s1); //New
 
 cbuffer LightCamBuffer : register(b0)
 {
@@ -38,7 +40,7 @@ float4 PS_main(PSIn input) : SV_Target
 	float3 N = normalize( input.Normal );
 	float3 B = normalize( input.Binormal);
 	float3 T = normalize( input.Tangent);
-	//return float4(input.Binormal * 0.5 + 0.5, 1); //For debugging with colors
+	return float4(input.Normal * 0.5 + 0.5, 1); //For debugging with colors
 	float3x3 TBN = transpose(float3x3 (T, B, N));
 	//Construct new normal with the TBN matrix
 	float4 NormalVector = texNormal.Sample(texSampler, input.TexCoord) * 2 - 1;

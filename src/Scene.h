@@ -24,6 +24,7 @@ protected:
 	ID3D11DeviceContext*	dxdevice_context;
 	int						window_width;
 	int						window_height;
+	Texture					cube_texture; //New
 
 public:
 
@@ -86,6 +87,7 @@ class OurTestScene : public Scene
 	OBJModel* moon;
 	OBJModel* plane;
 	OBJModel* lightSource;
+	OBJModel* skyBox;
 
 	// Model-to-world transformation matrices
 	mat4f Msponza;
@@ -95,6 +97,7 @@ class OurTestScene : public Scene
 	mat4f Mmoon;
 	mat4f Mplane;
 	mat4f MlightSource;
+	mat4f MskyBox;
 
 	// World-to-view matrix
 	mat4f Mview;

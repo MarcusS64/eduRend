@@ -52,8 +52,24 @@ void OurTestScene::Init()
 	moon = new OBJModel("assets/sphere/sphere.obj", dxdevice, dxdevice_context);
 	plane = new OBJModel("assets/Maya/Plane.obj", dxdevice, dxdevice_context);
 	lightSource = new OBJModel("assets/sphere/sphere.obj", dxdevice, dxdevice_context);
+	skyBox = new OBJModel("assets/Maya/CubeReverseNormals.obj", dxdevice, dxdevice_context);
 
 	LightPos = { 0.0f, 3.0f, 0.0f};
+
+	//New
+	const char* cube_filenames[6] =
+	{
+	   {"assets/cubemaps/cubemaps/Skybox/Skybox-posx.png"},
+	   {"assets/cubemaps/cubemaps/Skybox/Skybox-negx.png"},
+	   {"assets/cubemaps/cubemaps/Skybox/Skybox-posy.png"},
+	   {"assets/cubemaps/cubemaps/Skybox/Skybox-negy.png"},
+	   {"assets/cubemaps/cubemaps/Skybox/Skybox-posz.png"},
+	   {"assets/cubemaps/cubemaps/Skybox/Skybox-negz.png"}
+	};
+	HRESULT hr = LoadCubeTextureFromFile(dxdevice, cube_filenames, &cube_texture);
+
+	if (SUCCEEDED(hr)) std::cout << "Cubemap OK" << std::endl;
+	else std::cout << "Cubemap failed to load" << std::endl;
 }
 
 //
@@ -96,6 +112,7 @@ void OurTestScene::Update(float dt, InputHandler* input_handler)
 	Mmoon = Mearth * mat4f::translation(2, 0, 0) * mat4f::rotation(-angle, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.2f);
 	Mplane = mat4f::translation(0, 0, -9.0f) * mat4f::rotation(0.0f, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.5f);
 	MlightSource = mat4f::translation(LightPos.x, LightPos.y, LightPos.z) * mat4f::rotation(0.0f, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.2f);
+	MskyBox = mat4f::translation(0, -25.0f, 0) * mat4f::rotation(0.0f, 0.0f, 1.0f, 0.0f) * mat4f::scaling(60.0f);
 	// Increment the rotation angle.
 	angle += angle_vel * dt;
 
@@ -121,6 +138,7 @@ void OurTestScene::Render()
 	dxdevice_context->PSSetConstantBuffers(0, 1, &lightCam_buffer);
 	
 	dxdevice_context->PSSetSamplers(0, 1, &tex_sampler[filterIndex]);
+	dxdevice_context->PSSetShaderResources(0, 1, &cube_texture.texture_SRV);
 	// Obtain the matrices needed for rendering from the camera
 	Mview = camera->get_WorldToViewMatrix();
 	Mproj = camera->get_ProjectionMatrix();
@@ -148,6 +166,9 @@ void OurTestScene::Render()
 
 	UpdateTransformationBuffer(MlightSource, Mview, Mproj);
 	lightSource->Render();
+
+	UpdateTransformationBuffer(MskyBox, Mview, Mproj);
+	skyBox->Render();
 }
 
 void OurTestScene::Release()
@@ -161,6 +182,7 @@ void OurTestScene::Release()
 	SAFE_DELETE(plane);
 	SAFE_DELETE(camera);
 	SAFE_DELETE(lightSource);
+	SAFE_DELETE(skyBox);
 
 	SAFE_RELEASE(transformation_buffer);
 	// + release other CBuffers
