@@ -11,10 +11,11 @@ struct PSIn
 	float3 WorldPos : Pos;
 	float3 Tangent : TANGENT;
 	float3 Binormal : BINORMAL;
+	//float3 ViewVector : VIEW;
 };
 
 SamplerState texSampler : register (s0);
-//SamplerState cubeSampler : register (s1); //New
+SamplerState cubeSampler : register (s1); //New
 
 cbuffer LightCamBuffer : register(b0)
 {
@@ -36,15 +37,18 @@ cbuffer PhongShinyBuffer : register(b1)
 
 float4 PS_main(PSIn input) : SV_Target
 {
-	//From color to vector (decode) //New
+	//New
 	float3 N = normalize( input.Normal );
 	float3 B = normalize( input.Binormal);
 	float3 T = normalize( input.Tangent);
-	return float4(input.Normal * 0.5 + 0.5, 1); //For debugging with colors
+	//return float4(input.Normal * 0.5 + 0.5, 1); //For debugging with colors
+
 	float3x3 TBN = transpose(float3x3 (T, B, N));
 	//Construct new normal with the TBN matrix
-	float4 NormalVector = texNormal.Sample(texSampler, input.TexCoord) * 2 - 1;
+	float4 NormalVector = texNormal.Sample(texSampler, input.TexCoord) * 2 - 1; //From color to vector (decode) 
 	float3 N_ = mul(TBN, NormalVector.xyz);
+	//float3 CubeVector = texCube.Sample(cubeSampler, input.ViewVector); //Is this correct?
+
 	//Replace input.Normal with the new normal TBN * N
 	float3 LightVector1 = normalize(LightPosition1.xyz - input.WorldPos);
 	float3 ReflectVector1 = normalize(reflect(-LightVector1.xyz, N_));

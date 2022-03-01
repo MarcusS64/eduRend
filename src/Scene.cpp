@@ -138,7 +138,8 @@ void OurTestScene::Render()
 	dxdevice_context->PSSetConstantBuffers(0, 1, &lightCam_buffer);
 	
 	dxdevice_context->PSSetSamplers(0, 1, &tex_sampler[filterIndex]);
-	dxdevice_context->PSSetShaderResources(0, 1, &cube_texture.texture_SRV);
+	const unsigned cube_slot = 0;
+	dxdevice_context->PSSetShaderResources(cube_slot, 1, &cube_texture.texture_SRV);
 	// Obtain the matrices needed for rendering from the camera
 	Mview = camera->get_WorldToViewMatrix();
 	Mproj = camera->get_ProjectionMatrix();
@@ -188,6 +189,7 @@ void OurTestScene::Release()
 	// + release other CBuffers
 	SAFE_RELEASE(lightCam_buffer);
 	//SAFE_RELEASE(tex_sampler);
+	SAFE_RELEASE(cube_texture.texture_SRV);
 }
 
 void OurTestScene::WindowResize(
