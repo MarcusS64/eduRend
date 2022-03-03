@@ -112,7 +112,7 @@ void OurTestScene::Update(float dt, InputHandler* input_handler)
 	Mmoon = Mearth * mat4f::translation(2, 0, 0) * mat4f::rotation(-angle, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.2f);
 	Mplane = mat4f::translation(0, 0, -9.0f) * mat4f::rotation(0.0f, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.5f);
 	MlightSource = mat4f::translation(LightPos.x, LightPos.y, LightPos.z) * mat4f::rotation(0.0f, 0.0f, 1.0f, 0.0f) * mat4f::scaling(0.2f);
-	MskyBox = mat4f::translation(0, -25.0f, 0) * mat4f::rotation(0.0f, 0.0f, 1.0f, 0.0f) * mat4f::scaling(60.0f);
+	MskyBox = mat4f::translation(0, -55.0f, 0) * mat4f::rotation(0.0f, 0.0f, 1.0f, 0.0f) * mat4f::scaling(70.0f);
 	// Increment the rotation angle.
 	angle += angle_vel * dt;
 
@@ -138,7 +138,7 @@ void OurTestScene::Render()
 	dxdevice_context->PSSetConstantBuffers(0, 1, &lightCam_buffer);
 	
 	dxdevice_context->PSSetSamplers(0, 1, &tex_sampler[filterIndex]);
-	const unsigned cube_slot = 0;
+	const unsigned cube_slot = 2;
 	dxdevice_context->PSSetShaderResources(cube_slot, 1, &cube_texture.texture_SRV);
 	// Obtain the matrices needed for rendering from the camera
 	Mview = camera->get_WorldToViewMatrix();
